@@ -52,7 +52,7 @@ function crearFilaResultado(resultado) {
     botonSeleccionar.textContent = "Seleccionar";
 
     botonSeleccionar.addEventListener("click", () => {
-        seleccionarLocalidad(resultado);
+        obtenerPrevision(resultado.latitude, resultado.longitude, resultado.name, resultado.country);
     });
 
     celdaBoton.appendChild(botonSeleccionar);
@@ -65,14 +65,28 @@ function crearFilaResultado(resultado) {
 
 }
 
-function seleccionarLocalidad(resultado) {
 
-    const latitud = resultado.latitude;
-    const longitud = resultado.longitude;
 
-    console.log("Botón pulsado");
-    console.log(resultado.name);
-    console.log(resultado.country);
-    console.log(`Latitud: ${latitud} Longitud: ${longitud}`);
+async function obtenerPrevision(latitud, longitud, ciudad_buscada, pais_buscado){
+
+    const url =
+        "https://api.open-meteo.com/v1/forecast" +
+        "?latitude=" + latitud +
+        "&longitude=" + longitud +
+        "&current=temperature_2m" +
+        "&timezone=auto" +
+        "&forecast_days=7";
+
+    const respuesta = await fetch(url);
+    const datos = await respuesta.json();
+
+    const temperatura = document.getElementById("temperatura");
+    temperatura.textContent = datos.current.temperature_2m;
+
+    const ciudad = document.getElementById("ciudad");
+    ciudad.textContent = ciudad_buscada;
+
+    const pais = document.getElementById("pais");
+    pais.textContent = pais_buscado;
 
 }
